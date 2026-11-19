@@ -1,0 +1,41 @@
+{
+  "name": "n8n-nodes-quantledger",
+  "version": "2.8.0",
+  "description": "Official QuantLedger n8n community node: 73 deterministic GAAP, IRC corporate tax, 409A, DCAA, US KYB/OFAC sanctions, SEC Form D fundraising leads, DOL Form 5500 CPA audit & SEC 10-K tools.",
+  "keywords": [
+    "n8n-community-node-package",
+    "accounting",
+    "gaap",
+    "corporate-tax",
+    "kyb",
+    "ofac-sanctions",
+    "sec-edgar",
+    "form-d",
+    "form-5500",
+    "erisa"
+  ],
+  "license": "MIT",
+  "homepage": "https://quantledgerapi.github.io/google-sheets-excel-formulas-and-n8n/",
+  "author": {
+    "name": "QuantLedgerAPI",
+    "url": "https://github.com/QuantLedgerAPI"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/QuantLedgerAPI/n8n-nodes-quantledger.git"
+  },
+  "main": "index.js",
+  "files": [
+    "dist",
+    "index.js"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/QuantLedgerApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/QuantLedger/QuantLedger.node.js"
+    ]
+  }
+}
