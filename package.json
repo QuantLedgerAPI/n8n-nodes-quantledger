@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-quantledger",
-  "version": "2.8.0",
+  "version": "2.8.2",
   "description": "Official QuantLedger n8n community node: 73 deterministic GAAP, IRC corporate tax, 409A, DCAA, US KYB/OFAC sanctions, SEC Form D fundraising leads, DOL Form 5500 CPA audit & SEC 10-K tools.",
   "keywords": [
     "n8n-community-node-package",
