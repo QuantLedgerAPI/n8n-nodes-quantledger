@@ -57,6 +57,13 @@ class QuantLedger {
         const parsed = typeof rawJson === 'string' ? JSON.parse(rawJson || '{}') : (rawJson || {});
         url = usePro ? `${baseOrigin}/v1/suites/${encodeURIComponent(code)}/compute` : `${DEMO_ORIGIN}/v1/public/preview/${encodeURIComponent(code)}`;
         body = { jurisdiction: jur, naics_or_sic: naics, structured_inputs: parsed };
+      } else if (op === 'bridgeTrialBalance') {
+        const code = String(this.getNodeParameter('engineCode', i, 'BI-21')).trim().toUpperCase();
+        const jur = String(this.getNodeParameter('jurisdiction', i, 'DE')).trim().toUpperCase();
+        const naics = String(this.getNodeParameter('naicsOrSic', i, '332710')).trim();
+        const rawLedger = this.getNodeParameter('rawLedgerData', i, '');
+        url = usePro ? `${baseOrigin}/v1/ledger/trial-balance-bridge` : `${DEMO_ORIGIN}/v1/public/ledger-bridge-preview`;
+        body = { raw_ledger_data: rawLedger || null, source_format: 'auto', engine_code: code, jurisdiction: jur, naics_or_sic: naics };
       } else if (op === 'batchScreenKyb') {
         const rawEnts = String(this.getNodeParameter('entitiesRaw', i, 'Apple Inc.')).split(/[,\n]+/).map((s) => s.trim()).filter(Boolean);
         url = usePro ? `${baseOrigin}/v1/kyb/batch-screen` : `${DEMO_ORIGIN}/v1/public/kyb-preview`;

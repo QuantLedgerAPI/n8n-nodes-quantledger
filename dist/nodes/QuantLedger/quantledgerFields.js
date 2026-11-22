@@ -15,6 +15,12 @@ const QUANTLEDGER_PROPERTIES = [
         action: 'Execute GAAP, tax, 409A or DCAA math engine',
       },
       {
+        name: 'Bridge QuickBooks, Xero or NetSuite Trial Balance to Solver',
+        value: 'bridgeTrialBalance',
+        description: 'Verify Debits == Credits on raw QuickBooks/Xero CSV or JSON and map Chart of Accounts into any BI-01..BI-73 solver',
+        action: 'Bridge QuickBooks or Xero trial balance to solver',
+      },
+      {
         name: 'Batch Screen US KYB, OFAC Sanctions, BIS & OIG Exclusions',
         value: 'batchScreenKyb',
         description: 'Screen counterparties against 138,000+ live US OFAC SDN/SSI, Commerce BIS, ITAR, HHS OIG & SEC records',
@@ -51,7 +57,7 @@ const QUANTLEDGER_PROPERTIES = [
     name: 'engineCode',
     type: 'string',
     default: 'BI-17',
-    displayOptions: { show: { operation: ['executeMathEngine', 'spreadsheetSpill'] } },
+    displayOptions: { show: { operation: ['executeMathEngine', 'bridgeTrialBalance', 'spreadsheetSpill'] } },
     description: 'Examples: BI-17 (ASC 842 Lease), BI-07 (DCAA Indirect Wrap), BI-21 (M&A QoE), BI-48 (IRC 409A), BI-50 (R&D Credit)',
   },
   {
@@ -59,7 +65,7 @@ const QUANTLEDGER_PROPERTIES = [
     name: 'jurisdiction',
     type: 'string',
     default: 'NY',
-    displayOptions: { show: { operation: ['executeMathEngine', 'spreadsheetSpill'] } },
+    displayOptions: { show: { operation: ['executeMathEngine', 'bridgeTrialBalance', 'spreadsheetSpill'] } },
     description: '2-letter US State, DC, PR, GU, VI, AS, MP, or US Federal code',
   },
   {
@@ -67,7 +73,16 @@ const QUANTLEDGER_PROPERTIES = [
     name: 'naicsOrSic',
     type: 'string',
     default: '541211',
-    displayOptions: { show: { operation: ['executeMathEngine'] } },
+    displayOptions: { show: { operation: ['executeMathEngine', 'bridgeTrialBalance'] } },
+  },
+  {
+    displayName: 'Raw QuickBooks / Xero / NetSuite Trial Balance (CSV or JSON)',
+    name: 'rawLedgerData',
+    type: 'string',
+    typeOptions: { rows: 5 },
+    default: '',
+    displayOptions: { show: { operation: ['bridgeTrialBalance'] } },
+    description: 'Paste QuickBooks/Xero Trial Balance CSV or pass JSON from QuickBooks/Xero nodes (leave empty for built-in 22-account sample)',
   },
   {
     displayName: 'Structured Inputs (JSON)',
