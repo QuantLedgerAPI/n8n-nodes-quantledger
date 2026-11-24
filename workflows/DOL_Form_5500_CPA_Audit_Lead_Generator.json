@@ -1,0 +1,140 @@
+{
+  "nodes": [
+    {
+      "id": "ql-dol-form-5500-02-trig",
+      "name": "When clicking 'Test workflow'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -460,
+        80
+      ],
+      "parameters": {},
+      "typeVersion": 1
+    },
+    {
+      "id": "ql-dol-form-5500-02-cfg",
+      "name": "Filter & Optional API Key",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -200,
+        80
+      ],
+      "parameters": {
+        "options": {},
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f55-1",
+              "name": "state_filter",
+              "type": "string",
+              "value": "CA"
+            },
+            {
+              "id": "f55-2",
+              "name": "trigger_filter",
+              "type": "string",
+              "value": "FIRST_TIME_CPA_AUDIT_ZONE"
+            },
+            {
+              "id": "f55-3",
+              "name": "min_assets_usd",
+              "type": "number",
+              "value": 500000
+            }
+          ]
+        }
+      },
+      "typeVersion": 3.4
+    },
+    {
+      "id": "ql-dol-form-5500-02-http",
+      "name": "QuantLedger Deterministic API",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        80,
+        80
+      ],
+      "parameters": {
+        "url": "https://quantledger-ghost-kitchen-3yplwqtnha-uc.a.run.app/v1/public/form-5500-preview",
+        "method": "POST",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"plan_year\": 2025,\n  \"state_filter\": \"{{ $json.state_filter }}\",\n  \"trigger_filter\": \"{{ $json.trigger_filter }}\",\n  \"min_assets_usd\": {{ $json.min_assets_usd }}\n}",
+        "options": {}
+      },
+      "typeVersion": 4.2
+    },
+    {
+      "id": "ql-dol-form-5500-02-fmt",
+      "name": "Normalize Clean Rows",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        340,
+        80
+      ],
+      "parameters": {
+        "jsCode": "const body = $input.first().json;\nconst plans = body.plans || [];\nreturn plans.map((p) => ({ json: {\n  sponsor_name: p.sponsor_name,\n  ein: p.sponsor_ein,\n  fiduciary_signer: p.fiduciary_signer_name,\n  phone: p.sponsor_phone,\n  participants: p.account_balance_participants,\n  net_assets_usd: p.net_assets_eoy_usd,\n  audit_trigger: p.iqpa_audit_trigger_status,\n  admin_fee_bps: p.admin_fee_bps\n}}));\n"
+      },
+      "typeVersion": 2
+    },
+    {
+      "id": "ql-dol-form-5500-02-note",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -460,
+        -220
+      ],
+      "parameters": {
+        "width": 640,
+        "height": 250,
+        "content": "## DOL Form 5500 401(k) CPA Audit & ERISA Sec. 408(b)(2) Fee Screener\n\nQueries 121,000+ official U.S. DOL EFAST2 retirement plans for growing companies crossing the 80-120 participant first-time CPA audit threshold and excess recordkeeping fees.\n\n**1/ Instant Zero-Key Run:** Click **Test workflow** to pull 15 live plans immediately.\n**2/ Full 100-Plan Batches & .xlsx:** Subscribe at https://rapidapi.com/quantledger/api/quantledger-73-engine-financial-and-statutory-api or install `n8n-nodes-quantledger`."
+      },
+      "typeVersion": 1
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking 'Test workflow'": {
+      "main": [
+        [
+          {
+            "node": "Filter & Optional API Key",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter & Optional API Key": {
+      "main": [
+        [
+          {
+            "node": "QuantLedger Deterministic API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QuantLedger Deterministic API": {
+      "main": [
+        [
+          {
+            "node": "Normalize Clean Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "staticData": null,
+  "meta": {
+    "instanceId": "quantledger-ql-dol-form-5500-02"
+  },
+  "id": "ql-dol-form-5500-02",
+  "name": "DOL Form 5500 401k CPA Audit and ERISA Fee Lead Screener",
+  "active": false
+}

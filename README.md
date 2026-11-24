@@ -1,6 +1,6 @@
 # n8n-nodes-quantledger
 
-Official **QuantLedger** community node for **n8n** workflow automation (`v2.9.1`).
+Official **QuantLedger** community node for **n8n** workflow automation (`v2.9.2`).
 
 Connects n8n pipelines directly to **73 deterministic pure-Python & NumPy CPA, FASB GAAP, IRC Corporate Tax, 409A Valuation, M&A QoE, GovCon DCAA, Commercial Real Estate, and Credit solvers (292 statutory laws across 57 US jurisdictions)** plus live federal compliance & B2B lead screeners:
 

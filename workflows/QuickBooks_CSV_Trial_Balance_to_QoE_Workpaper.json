@@ -1,0 +1,140 @@
+{
+  "nodes": [
+    {
+      "id": "ql-qbo-xero-bridge-03-trig",
+      "name": "When clicking 'Test workflow'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -460,
+        80
+      ],
+      "parameters": {},
+      "typeVersion": 1
+    },
+    {
+      "id": "ql-qbo-xero-bridge-03-cfg",
+      "name": "Filter & Optional API Key",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -200,
+        80
+      ],
+      "parameters": {
+        "options": {},
+        "assignments": {
+          "assignments": [
+            {
+              "id": "tb-1",
+              "name": "engine_code",
+              "type": "string",
+              "value": "BI-21"
+            },
+            {
+              "id": "tb-2",
+              "name": "jurisdiction",
+              "type": "string",
+              "value": "DE"
+            },
+            {
+              "id": "tb-3",
+              "name": "naics_or_sic",
+              "type": "string",
+              "value": "332710"
+            }
+          ]
+        }
+      },
+      "typeVersion": 3.4
+    },
+    {
+      "id": "ql-qbo-xero-bridge-03-http",
+      "name": "QuantLedger Deterministic API",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        80,
+        80
+      ],
+      "parameters": {
+        "url": "https://quantledger-ghost-kitchen-3yplwqtnha-uc.a.run.app/v1/public/ledger-bridge-preview",
+        "method": "POST",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"engine_code\": \"{{ $json.engine_code }}\",\n  \"jurisdiction\": \"{{ $json.jurisdiction }}\",\n  \"naics_or_sic\": \"{{ $json.naics_or_sic }}\"\n}",
+        "options": {}
+      },
+      "typeVersion": 4.2
+    },
+    {
+      "id": "ql-qbo-xero-bridge-03-fmt",
+      "name": "Normalize Clean Rows",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        340,
+        80
+      ],
+      "parameters": {
+        "jsCode": "const b = $input.first().json;\nconst prov = b.ledger_bridge_provenance || {};\nreturn [{ json: {\n  tie_out: prov.trial_balance_tie_out,\n  gaap_rollup: prov.gaap_financial_rollup,\n  solver_headline_kpis: b.headline_kpis\n}}];\n"
+      },
+      "typeVersion": 2
+    },
+    {
+      "id": "ql-qbo-xero-bridge-03-note",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -460,
+        -220
+      ],
+      "parameters": {
+        "width": 640,
+        "height": 250,
+        "content": "## QuickBooks / Xero Trial-Balance -> Deterministic GAAP & M&A QoE Bridge\n\nVerifies AICPA AU-C Sec. 500 double-entry tie-out (`Debits == Credits`) in RAM and maps QuickBooks, Xero, or NetSuite Trial Balances into any of QuantLedger's 73 statutory & GAAP solvers.\n\n**1/ Instant Zero-Key Run:** Click **Test workflow** to run the built-in 22-account sample Trial Balance into `BI-21` (M&A QoE & Proof of Cash).\n**2/ Full API & 5-Tab .xlsx:** https://quantledgerapi.github.io/google-sheets-excel-formulas-and-n8n/"
+      },
+      "typeVersion": 1
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking 'Test workflow'": {
+      "main": [
+        [
+          {
+            "node": "Filter & Optional API Key",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter & Optional API Key": {
+      "main": [
+        [
+          {
+            "node": "QuantLedger Deterministic API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QuantLedger Deterministic API": {
+      "main": [
+        [
+          {
+            "node": "Normalize Clean Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "staticData": null,
+  "meta": {
+    "instanceId": "quantledger-ql-qbo-xero-bridge-03"
+  },
+  "id": "ql-qbo-xero-bridge-03",
+  "name": "QuickBooks and Xero Trial Balance to M&A QoE and Cash Bridge",
+  "active": false
+}
